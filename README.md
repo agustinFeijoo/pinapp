@@ -10,8 +10,8 @@ Durante el desarrollo del proyecto se utilizaron herramientas de IA como ChatGPT
 Proyecto fullstack compuesto por:
 
 - Frontend: https://frontend-748216969053.us-central1.run.app
-- Backend BFF: Node.js https://nodejs-748216969053.us-central1.run.app
-- Microservicio: Spring Boot https://ms-a-748216969053.us-central1.run.app
+- Backend BFF: Node.js https://nodejs-748216969053.us-central1.run.app/bff/clientes
+- Microservicio: Spring Boot https://ms-a-748216969053.us-central1.run.app/api/clientes
 - Swagger (API Docs): https://ms-a-748216969053.us-central1.run.app/swagger-ui.html
 - Base de datos: PostgreSQL (GCP)
 
