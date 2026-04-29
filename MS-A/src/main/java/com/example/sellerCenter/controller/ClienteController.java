@@ -31,7 +31,7 @@ public class ClienteController {
             summary = "Crear cliente",
             description = "Crea un nuevo cliente en el sistema"
     )
-    @ApiResponse(responseCode = "201", description = "Cliente creado correctamente",
+    @ApiResponse(responseCode = "201", description = "Cliente creado correctamente.",
             content = @Content(schema = @Schema(implementation = Cliente.class)))
     public ResponseEntity<Cliente> crear(@Valid @RequestBody Cliente cliente) {
         Cliente creado = service.crear(cliente);
