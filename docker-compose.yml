@@ -1,0 +1,16 @@
+services:
+  spring:
+    build: ./MS-A
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+
+  node:
+    build: ./nodeJS
+    container_name: node-bff
+    ports:
+      - "3000:3000"
+    depends_on:
+      - spring
+    environment:
+      - MS_A_URL=http://spring:8080/api/clientes

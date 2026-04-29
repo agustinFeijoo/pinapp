@@ -1,0 +1,52 @@
+# ======================
+# GLOBAL
+# ======================
+node_modules
+dist
+build
+.env
+.env.*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode
+.idea
+
+# ======================
+# FRONTEND (React)
+# ======================
+frontend/node_modules
+frontend/build
+frontend/dist
+
+# ======================
+# NODEJS (BFF)
+# ======================
+nodeJS/node_modules
+nodeJS/dist
+nodeJS/.env
+nodeJS/coverage
+
+# ======================
+# JAVA (Spring Boot MS-A)
+# ======================
+MS-A/target
+MS-A/.idea
+MS-A/*.log
+
+# Maven wrapper (optional keep/remove)
+# MS-A/.mvn/wrapper/maven-wrapper.jar
+
+# ======================
+# DOCKER
+# ======================
+**/.dockerignore
+
+# ======================
+# TESTS
+# ======================
+coverage
