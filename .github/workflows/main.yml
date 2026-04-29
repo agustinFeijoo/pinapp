@@ -1,0 +1,93 @@
+name: CI/CD Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: pinapp-test-agustin
+  REGION: us-central1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🔐 Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: ☁️ Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: 🐳 Configure Docker
+        run: gcloud auth configure-docker
+
+      # ---------------------------
+      # FRONTEND
+      # ---------------------------
+      - name: 🏗️ Build Frontend
+        run: |
+          docker build \
+            --build-arg REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} \
+            -t gcr.io/${{ env.PROJECT_ID }}/frontend ./frontend
+
+      - name: 📤 Push Frontend
+        run: docker push gcr.io/${{ env.PROJECT_ID }}/frontend
+
+      - name: 🚀 Deploy Frontend
+        run: |
+          gcloud run deploy frontend \
+            --image gcr.io/${{ env.PROJECT_ID }}/frontend \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8080
+
+      # ---------------------------
+      # NODE BFF
+      # ---------------------------
+      - name: 🏗️ Build Node BFF
+        run: |
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/nodejs ./nodeJS
+
+      - name: 📤 Push Node BFF
+        run: docker push gcr.io/${{ env.PROJECT_ID }}/nodejs
+
+      - name: 🚀 Deploy Node BFF
+        run: |
+          gcloud run deploy nodejs \
+            --image gcr.io/${{ env.PROJECT_ID }}/nodejs \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --set-env-vars MS_A_URL=${{ secrets.MS_A_URL }}
+
+      # ---------------------------
+      # SPRING BOOT
+      # ---------------------------
+      - name: 🏗️ Build Spring Boot
+        run: |
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/ms-a ./MS-A
+
+      - name: 📤 Push Spring Boot
+        run: docker push gcr.io/${{ env.PROJECT_ID }}/ms-a
+
+      - name: 🚀 Deploy Spring Boot
+        run: |
+          gcloud run deploy ms-a \
+            --image gcr.io/${{ env.PROJECT_ID }}/ms-a \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --set-env-vars SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }},SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }},SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
